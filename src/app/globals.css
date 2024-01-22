@@ -49,7 +49,7 @@ body {
 }
 
 .right-section {
-  padding: 1.6rem 1.6rem;
+  padding: 1.6rem 1.6rem 1.6rem 1.6rem;
   background-color: white;
   color: black;
   border-top-right-radius: 20px;
@@ -88,12 +88,13 @@ body {
   outline: 0px;
 }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    margin: 0; 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+
 }
 
 .button {
@@ -103,10 +104,9 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .register-btn {
-  padding: 0.5rem;
-  border-radius: 20px;
-  padding-left: 3rem;
-  padding-right: 3rem;
+  width: 10rem;
+  height: 2.5rem;
+  border-radius: 25px;
   background-color: green;
   border: 0px;
   color: white;
@@ -114,10 +114,9 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .login-btn {
-  padding: 0.5rem;
-  border-radius: 20px;
-  padding-left: 3rem;
-  padding-right: 3rem;
+  width: 10rem;
+  height: 2.5rem;
+  border-radius: 25px;
   background-color: rgb(221, 40, 40);
   border: 0px;
   color: white;
@@ -166,7 +165,7 @@ input[type=number]::-webkit-outer-spin-button {
 @media screen and (max-width:600px) {
 
   body {
-    height:auto;
+    height: auto;
   }
 
   .register-section {
@@ -204,11 +203,11 @@ input[type=number]::-webkit-outer-spin-button {
     justify-content: center;
   }
 
-  .social-media-section{
+  .social-media-section {
     text-align: center;
   }
 
-  .social-media-icon-section{
+  .social-media-icon-section {
     justify-content: center;
   }
 
@@ -221,22 +220,22 @@ input[type=number]::-webkit-outer-spin-button {
     display: none;
   }
 
-  .twitter{
+  .twitter {
     padding: 1rem;
     border-radius: 50%;
   }
 
-  .twitter span{
-    display:none; 
+  .twitter span {
+    display: none;
   }
 
-  .linkedin{
+  .linkedin {
     padding: 1rem;
     border-radius: 50%;
   }
 
-  .linkedin span{
-    display:none; 
+  .linkedin span {
+    display: none;
   }
 }
 
@@ -244,12 +243,12 @@ input[type=number]::-webkit-outer-spin-button {
 
   .image-text {
     padding: 1rem;
-  }  
+  }
 }
 
 /* Error Message  */
 
-.error_message{
+.error_message {
   position: absolute;
   margin-top: -1.5rem;
   left: 80%;
@@ -260,8 +259,16 @@ input[type=number]::-webkit-outer-spin-button {
 
 @media screen and (max-width:1000px) {
 
-  .error_message span{
+  .error_message span {
     display: none;
   }
-  
+
+}
+
+.fix{
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+
 }

@@ -2,13 +2,15 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import Link from "next/link"
 import { BASE_API_URL } from "@/app/lib/userdb";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
 
   const router = useRouter();
+
+  const [loading, setloading] = useState(false);
+  const [register, setregister] = useState(false);
 
   const [mail, setmail] = useState("");
   const [password, setpassword] = useState("");
@@ -70,12 +72,14 @@ export default function Login() {
     setisFormValid(Object.keys(error).length === 0);
   }
 
-  const login = async() => {
+  const login_btn = async () => {
 
     if (!isFormValid) {
       alert('Error');
     }
     else {
+      setloading(true);
+
       try {
         let data = await fetch(`${BASE_API_URL}/api/login`, {
           method: "POST",
@@ -88,21 +92,24 @@ export default function Login() {
           alert("SucessFull Login");
           console.log(user_mail);
           console.log(user_password);
-          router.push('/users_data');
-          return ;
+          router.push(`/login/${user_mail._id}`);
+          setloading(false);
+          return;
         }
-        else if(!user_mail && !user_password){
+        else if (!user_mail && !user_password) {
           setcolor_mail("red");
           setmail_check('/circle-xmark-regular.svg');
           setcolor_password("red");
           setpassword_check("/circle-xmark-regular.svg");
-          alert("Email and Password Incorrect");
+          alert("Email and Password Both are Incorrect\nPlease try again");
+          setloading(false);
           return;
         }
-        else if(user_mail && !user_password){
+        else if (user_mail && !user_password) {
           setcolor_password("red");
           setpassword_check("/circle-xmark-regular.svg");
-          alert("Password Incorrect");
+          alert("Incorrect Password \nThe Password that you'r entered is incorrect.\nPlease try again.");
+          setloading(false);
           return;
         }
       }
@@ -111,8 +118,13 @@ export default function Login() {
         alert('Failed to sign up the user');
       }
     };
-  
   };
+  
+  const register_btn = () => {
+    setregister(true);
+    router.push('/');
+  }
+
   return (
     <main>
       <div className="container register-section">
@@ -140,7 +152,7 @@ export default function Login() {
                     className="register-data"
                     value={mail}
                     onChange={(e) => (setmail(e.target.value))}
-                    style={{borderBottom:`1.8px solid ${color_mail}`}}
+                    style={{ borderBottom: `1.8px solid ${color_mail}` }}
                   />
                   <div className="error_message">
                     {
@@ -148,7 +160,7 @@ export default function Login() {
                     }
                     {
                       error.mail &&
-                      <span style={{color:color_mail}}>
+                      <span style={{ color: color_mail }}>
                         {error.mail}
                       </span>
                     }
@@ -162,7 +174,7 @@ export default function Login() {
                     className="register-data"
                     value={password}
                     onChange={(e) => (setpassword(e.target.value))}
-                    style={{borderBottom:`1.8px solid ${color_password}`}}
+                    style={{ borderBottom: `1.8px solid ${color_password}` }}
                   />
                   <div className="error_message">
                     {
@@ -170,7 +182,7 @@ export default function Login() {
                     }
                     {
                       error.password &&
-                      <span style={{color:color_password}}>
+                      <span style={{ color: color_password }}>
                         {error.password}
                       </span>
                     }
@@ -183,15 +195,15 @@ export default function Login() {
                   <br></br>
                   <div className="button">
                     <div>
-                      <input type="submit" value='Login' className="register-btn" onClick={login} />
+                      <button type="submit" className="login-btn" onClick={login_btn} >
+                        {loading ? "" : 'login'}
+                        {loading && <div className="spinner-border text-light"></div>}
+                      </button>
                     </div>
                     <div>
-                      <button className="login-btn">
-                        <span className="px-1" >
-                          <Link href='/' style={{ color: 'white', textDecoration: 'none' }} >
-                            Register
-                          </Link>
-                        </span>
+                      <button className="register-btn fix" onClick={register_btn} >
+                        {register ? "" : 'Register'}
+                        {register && <div className="spinner-border text-light"></div>}
                         <img src="/arrow-right-solid.svg" />
                       </button>
                     </div>

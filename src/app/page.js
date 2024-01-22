@@ -1,13 +1,16 @@
 "use client"
 import { useState, useEffect } from "react"
 import React from "react"
-import Link from "next/link"
 import { BASE_API_URL } from "./lib/userdb";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
 
   const router = useRouter();
+
+  const [loading, setloading] = useState(false)
+  const [login, setlogin] = useState(false);
+
 
   const [name, setname] = useState("");
   const [mail, setmail] = useState("");
@@ -23,7 +26,7 @@ export default function Home() {
       setType('password')
     }
   }
-  
+
   const [error, seterror] = useState({});
   const [name_check, setname_check] = useState("/circle-xmark-regular.svg");
   const [mail_check, setmail_check] = useState("/circle-xmark-regular.svg");
@@ -44,6 +47,7 @@ export default function Home() {
 
   const uservalidation = () => {
     let error = {};
+
     if (!name) {
       error.name = "Full Name  Required";
       setname_check('/circle-xmark-regular.svg');
@@ -53,6 +57,7 @@ export default function Home() {
       setname_check('/circle-check-regular.svg');
       setcolor_name('green');
     }
+
 
     if (!mail) {
       error.mail = "Email  Required";
@@ -71,6 +76,11 @@ export default function Home() {
 
     if (!phone) {
       error.phone = "Phone No Required";
+      setphone_check('/circle-xmark-regular.svg');
+      setcolor_phone('red');
+    }
+    else if (isNaN(phone)) {
+      error.phone = "Numerical Requried";
       setphone_check('/circle-xmark-regular.svg');
       setcolor_phone('red');
     }
@@ -97,54 +107,65 @@ export default function Home() {
     seterror(error);
     setisFormValid(Object.keys(error).length === 0);
   }
-  
 
-   const  submit = async() => {
-    if (!isFormValid) {
-      alert("Plz Feels Data");
+
+  const submit = async () => {
+
+
+    if (!isFormValid) { 
+      alert("Plz Feels Backs");
     }
-    else {
-      try{
 
-        const dataexits =  await fetch(`${BASE_API_URL}/api/usersexits`,{
-          method:'POST',
-          body:JSON.stringify({mail,phone})
+    else {
+      try {
+        setloading(true);
+        const dataexits = await fetch(`${BASE_API_URL}/api/usersexits`, {
+          method: 'POST',
+          body: JSON.stringify({ mail, phone })
         });
 
-        const { user_mail,user_phone } = await dataexits.json();
+        const { user_mail, user_phone } = await dataexits.json();
 
-        if(user_mail){
+        if (user_mail) {
           alert("Email alrady exits");
           setmail_check('/circle-xmark-regular.svg');
           setcolor_mail('red');
           console.log(user_mail);
-          return ;
+          setloading(false);
+          return;
         }
 
-        if(user_phone){
+        if (user_phone) {
           alert("Phone Number alrady exits");
           setphone_check('/circle-xmark-regular.svg');
           setcolor_phone('red');
           console.log(user_phone);
-          return ;
+          setloading(false);
+          return;
         }
 
-        let data = await fetch(`${BASE_API_URL}/api/users`,{
-          method:'POST',
-          body:JSON.stringify({name,mail,phone,password})
+        let data = await fetch(`${BASE_API_URL}/api/users`, {
+          method: 'POST',
+          body: JSON.stringify({ name, mail, phone, password })
         });
-        
 
         data = await data.json();
         console.log(data);
         alert("SuccessFull Register Data");
-        router.push('/users_data')
+        router.push('/login')
       }
-      catch (error){
+      catch (error) {
         alert('Failed to sign up the user');
       }
     }
+
   }
+
+  const login_btn = () =>{
+      setlogin(true);
+      router.push('/login');
+  }
+
 
   return (
     <main>
@@ -173,14 +194,14 @@ export default function Home() {
                     value={name}
                     onChange={(e) => setname(e.target.value)}
                     autoFocus
-                    style={{textTransform:'capitalize',borderBottom:`1.8px solid ${color_name}`}} />
+                    style={{ textTransform: 'capitalize', borderBottom: `1.8px solid ${color_name}` }} />
                   <div className="error_message">
                     {
                       <img className="mx-2" src={name_check} />
                     }
                     {
                       error.name &&
-                      <span style={{color:color_name}}>
+                      <span style={{ color: color_name }}>
                         {error.name}
                       </span>
                     }
@@ -192,7 +213,7 @@ export default function Home() {
                     className="register-data"
                     value={mail}
                     onChange={(e) => setmail(e.target.value)}
-                    style={{borderBottom:`1.8px solid ${color_mail}`}}
+                    style={{ borderBottom: `1.8px solid ${color_mail}` }}
                   />
                   <div className="error_message">
                     {
@@ -200,7 +221,7 @@ export default function Home() {
                     }
                     {
                       error.mail &&
-                      <span  style={{color:color_mail}}>
+                      <span style={{ color: color_mail }}>
                         {error.mail}
                       </span>
                     }
@@ -212,16 +233,16 @@ export default function Home() {
                     className="register-data"
                     value={phone}
                     onChange={(e) => setphone(e.target.value)}
-                    style={{borderBottom:`1.8px solid ${color_phone}`}}
+                    style={{ borderBottom: `1.8px solid ${color_phone}` }}
                     maxLength={10}
                   />
-                   <div className="error_message">
+                  <div className="error_message">
                     {
                       <img className="mx-2" src={phone_check} />
                     }
                     {
                       error.phone &&
-                      <span  style={{color:color_phone}}>
+                      <span style={{ color: color_phone }}>
                         {error.phone}
                       </span>
                     }
@@ -232,16 +253,16 @@ export default function Home() {
                     placeholder="PASSWORD"
                     className="register-data"
                     value={password}
-                    style={{borderBottom:`1.8px solid ${color_password}`}}
+                    style={{ borderBottom: `1.8px solid ${color_password}` }}
                     onChange={(e) => setpassword(e.target.value)}
                   />
-                   <div className="error_message">
+                  <div className="error_message">
                     {
                       <img className="mx-2" src={password_check} />
                     }
                     {
                       error.password &&
-                      <span  style={{color:color_password}}>
+                      <span style={{ color: color_password }}>
                         {error.password}
                       </span>
                     }
@@ -255,13 +276,15 @@ export default function Home() {
                   <br></br>
                   <div className="button">
                     <div>
-                      <input type="submit" value="Register" className="register-btn" onClick={submit} />
+                      <button type="submit" className="register-btn" onClick={submit} >
+                        {loading ? "" : 'Register'}
+                        {loading && <div className="spinner-border text-light"></div>}
+                      </button>
                     </div>
                     <div>
-                      <button className="login-btn">
-                        <span className="px-1" >
-                          <Link href='/login' style={{ color: 'white', textDecoration: 'none' }}>Login</Link>
-                        </span>
+                      <button className="login-btn fix"  onClick={login_btn} > 
+                        {login ? "" : 'Login' }
+                        {login && <div className="spinner-border text-light"></div>}
                         <img src="/arrow-right-solid.svg" />
                       </button>
                     </div>
