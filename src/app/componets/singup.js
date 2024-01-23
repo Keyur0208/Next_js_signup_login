@@ -1,19 +1,30 @@
 "use client"
 import { useState, useEffect } from "react"
 import React from "react"
-import Link from "next/link"
-import { BASE_API_URL } from "@/app/lib/userdb"
+import { BASE_API_URL } from "../lib/userdb";
 import { useRouter } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
+import '@/app/(page)/style/popup.css'
 
-export default function page() {
+export default function Home() {
 
   const router = useRouter();
-
   const [name, setname] = useState("");
   const [mail, setmail] = useState("");
   const [phone, setphone] = useState("");
   const [password, setpassword] = useState("");
   const [type, setType] = useState('password');
+  const [color_name, setcolor_name] = useState("red");
+  const [color_mail, setcolor_mail] = useState("red");
+  const [color_phone, setcolor_phone] = useState("red");
+  const [color_password, setcolor_password] = useState("red");
+  const [loading, setloading] = useState(false)
+  const [login, setlogin] = useState(false);
+  const [empty_popup, setempty_popup] = useState(false);
+  const [success_popup, setsuccess_popup] = useState(false);
+  const [mail_popup, setmail_popup] = useState(false);
+  const [phone_popup, setphone_popup] = useState(false);
 
 
   const showpassword = () => {
@@ -23,7 +34,7 @@ export default function page() {
       setType('password')
     }
   }
-  
+
   const [error, seterror] = useState({});
   const [name_check, setname_check] = useState("/circle-xmark-regular.svg");
   const [mail_check, setmail_check] = useState("/circle-xmark-regular.svg");
@@ -31,12 +42,6 @@ export default function page() {
   const [password_check, setpassword_check] = useState("/circle-xmark-regular.svg");
   const [isFormValid, setisFormValid] = useState(false);
 
-  // Color Change //
-
-  const [color_name, setcolor_name] = useState("red");
-  const [color_mail, setcolor_mail] = useState("red");
-  const [color_phone, setcolor_phone] = useState("red");
-  const [color_password, setcolor_password] = useState("red");
 
   useEffect(() => {
     uservalidation();
@@ -44,6 +49,7 @@ export default function page() {
 
   const uservalidation = () => {
     let error = {};
+
     if (!name) {
       error.name = "Full Name  Required";
       setname_check('/circle-xmark-regular.svg');
@@ -74,6 +80,11 @@ export default function page() {
       setphone_check('/circle-xmark-regular.svg');
       setcolor_phone('red');
     }
+    else if (isNaN(phone)) {
+      error.phone = "Numerical Requried";
+      setphone_check('/circle-xmark-regular.svg');
+      setcolor_phone('red');
+    }
     else if (phone.length < 10) {
       error.phone = "Must Be 10 Digit";
       setphone_check('/circle-xmark-regular.svg');
@@ -97,55 +108,100 @@ export default function page() {
     seterror(error);
     setisFormValid(Object.keys(error).length === 0);
   }
-  
 
-   const  submit = async() => {
+
+  const submit = async () => {
+
+
     if (!isFormValid) {
-      alert("Plz Feels Data");
+      setempty_popup(true);
     }
-    else {
-      try{
 
-        const dataexits =  await fetch(`${BASE_API_URL}/api/usersexits`,{
-          method:'POST',
-          body:JSON.stringify({mail,phone})
+    else {
+      try {
+        setloading(true);
+        const dataexits = await fetch(`${BASE_API_URL}/api/usersexits`, {
+          method: 'POST',
+          body: JSON.stringify({ mail, phone })
         });
 
-        const { user_mail,user_phone } = await dataexits.json();
+        const { user_mail, user_phone } = await dataexits.json();
 
-        if(user_mail){
-          alert("Email alrady exits");
+        if (user_mail) {
+          setmail_popup(true);
           setmail_check('/circle-xmark-regular.svg');
           setcolor_mail('red');
           console.log(user_mail);
-          return ;
+          setloading(false);
+          return;
         }
 
-        if(user_phone){
-          alert("Phone Number alrady exits");
+        if (user_phone) {
+          setphone_popup(true);
+          setphone_check('/circle-xmark-regular.svg');
+          setcolor_phone('red');
           console.log(user_phone);
-          return ;
+          setloading(false);
+          return;
         }
 
-        let data = await fetch(`${BASE_API_URL}/api/users`,{
-          method:'POST',
-          body:JSON.stringify({name,mail,phone,password})
+        let data = await fetch(`${BASE_API_URL}/api/users`, {
+          method: 'POST',
+          body: JSON.stringify({ name, mail, phone, password })
         });
-        
 
         data = await data.json();
         console.log(data);
-        alert("SuccessFull Register Data");
-        router.push('/users_data')
+        setsuccess_popup(true);
+        router.push('/login')
       }
-      catch (error){
+      catch (error) {
         alert('Failed to sign up the user');
       }
     }
+
   }
+
+  // Popup  //
+
+  function Show(props) {
+    return (
+      <div id="popup1" className="popup-container ">
+        <div className="popup-content">
+          <span className="close" onClick={Close}>{props.wrong} </span>
+          <div className="props-icon" >
+            <div>
+              <FontAwesomeIcon  icon={faXmarkCircle}  style={{ height: '2rem'}} className={props.color} />
+              <p>{props.error}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  function Close() {
+    setempty_popup(false);
+    setsuccess_popup(false);
+    setmail_popup(false);
+    setphone_popup(false);
+  }
+
+  // Login Btn //
+
+  const login_btn = () => {
+    setlogin(true);
+    router.push('/login');
+  }
+
 
   return (
     <main>
+      {empty_popup && <div> <Show error="Form Blacks Feels" wrong="&times;"  color="red"  /> </div>}
+      {success_popup && <div> <Show error="Sucessfull Form...." wrong="" check_icon={faCheckCircle} color='green' /> </div>}
+      {mail_popup && <div> <Show error="Email Alredy Exits" wrong="&times;" color="red" /></div>}
+      {phone_popup && <div> <Show error="Phone Number Alredy Exits" wrong="&times;" color="red" /></div>}
+
       <div className="container register-section">
         <div className="register-from">
           <div className="row">
@@ -171,14 +227,14 @@ export default function page() {
                     value={name}
                     onChange={(e) => setname(e.target.value)}
                     autoFocus
-                    style={{textTransform:'capitalize',borderBottom:`1.8px solid ${color_name}`}} />
+                    style={{ textTransform: 'capitalize', borderBottom: `1.8px solid ${color_name}` }} />
                   <div className="error_message">
                     {
                       <img className="mx-2" src={name_check} />
                     }
                     {
                       error.name &&
-                      <span style={{color:color_name}}>
+                      <span style={{ color: color_name }}>
                         {error.name}
                       </span>
                     }
@@ -190,7 +246,7 @@ export default function page() {
                     className="register-data"
                     value={mail}
                     onChange={(e) => setmail(e.target.value)}
-                    style={{borderBottom:`1.8px solid ${color_mail}`}}
+                    style={{ borderBottom: `1.8px solid ${color_mail}` }}
                   />
                   <div className="error_message">
                     {
@@ -198,7 +254,7 @@ export default function page() {
                     }
                     {
                       error.mail &&
-                      <span  style={{color:color_mail}}>
+                      <span style={{ color: color_mail }}>
                         {error.mail}
                       </span>
                     }
@@ -210,16 +266,16 @@ export default function page() {
                     className="register-data"
                     value={phone}
                     onChange={(e) => setphone(e.target.value)}
-                    style={{borderBottom:`1.8px solid ${color_phone}`}}
+                    style={{ borderBottom: `1.8px solid ${color_phone}` }}
                     maxLength={10}
                   />
-                   <div className="error_message">
+                  <div className="error_message">
                     {
                       <img className="mx-2" src={phone_check} />
                     }
                     {
                       error.phone &&
-                      <span  style={{color:color_phone}}>
+                      <span style={{ color: color_phone }}>
                         {error.phone}
                       </span>
                     }
@@ -230,16 +286,16 @@ export default function page() {
                     placeholder="PASSWORD"
                     className="register-data"
                     value={password}
-                    style={{borderBottom:`1.8px solid ${color_password}`}}
+                    style={{ borderBottom: `1.8px solid ${color_password}` }}
                     onChange={(e) => setpassword(e.target.value)}
                   />
-                   <div className="error_message">
+                  <div className="error_message">
                     {
                       <img className="mx-2" src={password_check} />
                     }
                     {
                       error.password &&
-                      <span  style={{color:color_password}}>
+                      <span style={{ color: color_password }}>
                         {error.password}
                       </span>
                     }
@@ -253,13 +309,15 @@ export default function page() {
                   <br></br>
                   <div className="button">
                     <div>
-                      <input type="submit" value="Register" className="register-btn" onClick={submit} />
+                      <button type="submit" className="register-btn" onClick={submit} >
+                        {loading ? "" : 'Register'}
+                        {loading && <div className="spinner-border text-light"></div>}
+                      </button>
                     </div>
                     <div>
-                      <button className="login-btn">
-                        <span className="px-1" >
-                          <Link href='/login' style={{ color: 'white', textDecoration: 'none' }}>Login</Link>
-                        </span>
+                      <button className="login-btn fix" onClick={login_btn} >
+                        {login ? "" : 'Login'}
+                        {login && <div className="spinner-border text-light"></div>}
                         <img src="/arrow-right-solid.svg" />
                       </button>
                     </div>
