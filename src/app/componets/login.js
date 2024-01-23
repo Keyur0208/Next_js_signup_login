@@ -20,7 +20,7 @@ export default function Login() {
   const [register, setregister] = useState(false);
   const [empty_popup, setempty_popup] = useState(false);
   const [success_popup, setsuccess_popup] = useState(true);
-  const [incorrect_popup, setincorrect_popup] = useState(false);
+  const [incorrect_popup, setincorrect_popup] = useState(true);
   const [phone_incorrect_popup, setphone_incorrect_popup] = useState(false);
 
   const showpassword = () => {
