@@ -155,13 +155,13 @@ export default function Login() {
 
   return (
     <main>
-      {empty_popup && <div> <Show error="Form Blacks Feels"  wrong="&times;"  color="red" /> </div>}
+      {empty_popup && <div> <Show error="Form Blacks Feels"  wrong="&times;"  check_icon={faXmarkCircle} color="red" /> </div>}
       
       {success_popup && <div> <Show error="Sucessfull Form...." wrong="" check_icon={faCheckCircle} color='green' /> </div>}
       
-      {incorrect_popup && <div> <Show error="Email and Password Both are Incorrect Please try again"  wrong="&times;"  color="red" /> </div>}
+      {incorrect_popup && <div> <Show error="Email and Password Both are Incorrect Please try again"  wrong="&times;"  check_icon={faXmarkCircle} color="red" /> </div>}
       
-      {phone_incorrect_popup && <div> <Show error="Incorrect Password The Password that you'r entered is incorrect.Please try again."  wrong="&times;"  color="red" /> </div>}
+      {phone_incorrect_popup && <div> <Show error="Incorrect Password The Password that you'r entered is incorrect.Please try again."  check_icon={faXmarkCircle} wrong="&times;"  color="red" /> </div>}
 
       <div className="container register-section">
         <div className="register-from">

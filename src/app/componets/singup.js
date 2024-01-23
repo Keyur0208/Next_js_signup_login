@@ -171,7 +171,7 @@ export default function Home() {
           <span className="close" onClick={Close}>{props.wrong} </span>
           <div className="props-icon" >
             <div>
-              <FontAwesomeIcon  icon={faXmarkCircle}  style={{ height: '2rem'}} className={props.color} />
+              <FontAwesomeIcon  icon={props.check_icon}  style={{ height: '2rem'}} className={props.color} />
               <p>{props.error}</p>
             </div>
           </div>
@@ -197,10 +197,10 @@ export default function Home() {
 
   return (
     <main>
-      {empty_popup && <div> <Show error="Form Blacks Feels" wrong="&times;"  color="red"  /> </div>}
-      {success_popup && <div> <Show error="Sucessfull Form...." wrong="" check_icon={faCheckCircle} color='green' /> </div>}
-      {mail_popup && <div> <Show error="Email Alredy Exits" wrong="&times;" color="red" /></div>}
-      {phone_popup && <div> <Show error="Phone Number Alredy Exits" wrong="&times;" color="red" /></div>}
+      {empty_popup && <div> <Show error="Form Blacks Feels" wrong="&times;"  check_icon={faXmarkCircle}  color="red"  /> </div>}
+      {success_popup && <div> <Show error="Sucessfull Form...." wrong=""  check_icon={faCheckCircle} color='green' /> </div>}
+      {mail_popup && <div> <Show error="Email Alredy Exits" wrong="&times;"  check_icon={faXmarkCircle} color="red" /></div>}
+      {phone_popup && <div> <Show error="Phone Number Alredy Exits" wrong="&times;"  check_icon={faXmarkCircle} color="red" /></div>}
 
       <div className="container register-section">
         <div className="register-from">
