@@ -266,7 +266,7 @@ export default function Home() {
                     onChange={(e) => setphone(e.target.value)}
                     style={{ borderBottom: `1.8px solid ${color_phone}` }}
                     maxLength={10}
-                    inputMode="number"
+                    inputMode="numeric"
                   />
                   <div className="error_message">
                     {

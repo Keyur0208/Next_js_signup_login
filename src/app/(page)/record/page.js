@@ -1,8 +1,7 @@
+import Password_check from "@/app/componets/check_password";
 import Delete_user from "@/app/componets/delete";
 import Update_btn from "@/app/componets/update_btn";
 import { BASE_API_URL } from "@/app/lib/userdb"
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 async function getusersdetails() {
     let userdata = await fetch(`${BASE_API_URL}/api/users`, { cache: 'no-store' });
@@ -29,7 +28,7 @@ export default async function Record() {
                                 <td>NO</td>
                                 <td>Full Name</td>
                                 <td>Email id</td>
-                                <td>Phone Number</td>
+                                <td>Password</td>
                                 <td>Update</td>
                                 <td>Delete</td>
                             </tr>
@@ -42,7 +41,7 @@ export default async function Record() {
                                             <td className="text-center fs-5">*</td>
                                             <td>{item.name}</td>
                                             <td>{item.mail}</td>
-                                            <td> {item.phone}</td>
+                                            <td><Password_check password={item.password} phone={item.phone} /></td>
                                             <td><Update_btn password={item.password}  id={item._id}/></td>
                                             <td><Delete_user password={item.password}  id={item._id} /></td>
                                         </tr>
