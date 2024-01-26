@@ -255,7 +255,8 @@ export default function User_Update(props) {
                                         onChange={(e) => setphone(e.target.value)}
                                         style={{ borderBottom: `1.8px solid ${color_phone}` }}
                                         maxLength={10}
-                                        inputMode="number"
+                                        inputMode="numerical"
+                                        disabled={true}
                                     />
                                     <div className="error_message">
                                         {

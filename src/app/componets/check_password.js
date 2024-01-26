@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 
 export default function Password_check(props) {
 
-  const [Checkpassword, setChckpassword] = useState("******")
+  const [Checkpassword, setChckpassword] = useState("******");
 
   let phone_value = props.phone;
 
@@ -23,9 +23,14 @@ export default function Password_check(props) {
     });
     if (text != phone_value) {
       setChckpassword("******");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Incorrect Password",
+      });
     }
     else{
-      setChckpassword(props.password)
+      Swal.fire(`Password  = ${props.password}`);
     }
   }
 
