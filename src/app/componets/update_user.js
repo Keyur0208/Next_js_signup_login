@@ -3,12 +3,9 @@ import { useState, useEffect } from "react"
 import React from "react"
 import { BASE_API_URL } from "../lib/userdb";
 import { useRouter } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
-import Swal from "sweetalert2";
 import '@/app/(page)/style/popup.css'
 
-export default function Home() {
+export default function User_Update(props) {
 
   const router = useRouter();
   const [name, setname] = useState("");
@@ -22,6 +19,7 @@ export default function Home() {
   const [color_password, setcolor_password] = useState("red");
   const [loading, setloading] = useState(false)
   const [login, setlogin] = useState(false);
+
 
   const showpassword = () => {
     if (type === 'password') {
@@ -41,7 +39,12 @@ export default function Home() {
 
   useEffect(() => {
     uservalidation();
+    getuserdetails();
   }, [name, mail, phone, password]);
+
+  const getuserdetails = () =>{
+    console.log(props.id);
+  }
 
   const uservalidation = () => {
     let error = {};
@@ -106,17 +109,11 @@ export default function Home() {
   }
 
 
+
   const submit = async () => {
-
-
     if (!isFormValid) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Feels Blacks Form!",
-      });
+      alert("Emptyu");
     }
-
     else {
       try {
         setloading(true);
@@ -128,11 +125,6 @@ export default function Home() {
         const { user_mail, user_phone } = await dataexits.json();
 
         if (user_mail) {
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Email Already Exits",
-          });
           setmail_check('/circle-xmark-regular.svg');
           setcolor_mail('red');
           console.log(user_mail);
@@ -141,11 +133,6 @@ export default function Home() {
         }
 
         if (user_phone) {
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Phone Number Already Exits",
-          });
           setphone_check('/circle-xmark-regular.svg');
           setcolor_phone('red');
           console.log(user_phone);
@@ -160,22 +147,8 @@ export default function Home() {
 
         data = await data.json();
         console.log(data);
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-            router.push('/login');
-          }
-        });
-        Toast.fire({
-          icon: "success",
-          title: "Register in successfully"
-        });
+        setsuccess_popup(true);
+        router.push('/login')
       }
       catch (error) {
         alert('Failed to sign up the user');
@@ -183,7 +156,6 @@ export default function Home() {
     }
 
   }
-
 
   // Login Btn //
 
@@ -195,11 +167,6 @@ export default function Home() {
 
   return (
     <main>
-      {/* {empty_popup && <div> <Show error="Form Blacks Feels" wrong="&times;"  check_icon={faXmarkCircle}  color="red"  /> </div>}
-      {success_popup && <div> <Show error="Sucessfull Form...." wrong=""  check_icon={faCheckCircle} color='green' /> </div>}
-      {mail_popup && <div> <Show error="Email Alredy Exits" wrong="&times;"  check_icon={faXmarkCircle} color="red" /></div>}
-      {phone_popup && <div> <Show error="Phone Number Alredy Exits" wrong="&times;"  check_icon={faXmarkCircle} color="red" /></div>} */}
-
       <div className="container register-section">
         <div className="register-from">
           <div className="row">
@@ -213,7 +180,7 @@ export default function Home() {
             <div className="col-12 col-sm-12 col-md-8 col-lg-8 col-xl-8 right-section">
               <div className="right-space">
                 <div className="register-title" >
-                  <h1>Register</h1>
+                  <h1>Update User</h1>
                   <p>Dont't have an account ? <a>Create Your account </a> & take less than a minute,</p>
                 </div>
 
@@ -309,13 +276,13 @@ export default function Home() {
                   <div className="button">
                     <div>
                       <button type="submit" className="register-btn" onClick={submit} >
-                        {loading ? "" : 'Register'}
+                        {loading ? "" : 'Update'}
                         {loading && <div className="spinner-border text-light"></div>}
                       </button>
                     </div>
                     <div>
                       <button className="login-btn fix" onClick={login_btn} >
-                        {login ? "" : 'Login'}
+                        {login ? "" : 'Back'}
                         {login && <div className="spinner-border text-light"></div>}
                         <img src="/arrow-right-solid.svg" />
                       </button>

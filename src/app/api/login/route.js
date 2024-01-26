@@ -9,10 +9,10 @@ export async function GET()
         await mongoose.connect(Connect_url);
         const user = await User.find();
         console.log(user);
-        return NextResponse.json({return:user,success:true},{status:200})
+        return NextResponse.json({users:user,success:true},{status:200})
     }
     catch(error) {
-        return NextResponse.json({return:"Not Connect MongoDB",success:false},{status:400})
+        return NextResponse.json({users:"Not Connect MongoDB",success:false},{status:400})
     }
 
 }

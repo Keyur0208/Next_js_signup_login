@@ -1,0 +1,19 @@
+.profile {
+    height: 10rem;
+    border-radius: 50%;
+    border: 4px solid #4294FF;
+    transform: rotate(360deg);
+}
+
+.user_heading{
+    padding: 1rem;
+    font-weight: 600;
+}
+
+.btn-group{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}

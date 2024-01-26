@@ -6,7 +6,8 @@ import { BASE_API_URL } from "../lib/userdb";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
-import '@/app/(page)/style/popup.css'
+import Swal from "sweetalert2";
+import '@/app/(page)/style/popup.css';
 
 export default function Login() {
 
@@ -18,10 +19,6 @@ export default function Login() {
   const [color_password, setcolor_password] = useState("red");
   const [loading, setloading] = useState(false);
   const [register, setregister] = useState(false);
-  const [empty_popup, setempty_popup] = useState(false);
-  const [success_popup, setsuccess_popup] = useState(false);
-  const [incorrect_popup, setincorrect_popup] = useState(false);
-  const [phone_incorrect_popup, setphone_incorrect_popup] = useState(false);
 
   const showpassword = () => {
     if (type === 'password') {
@@ -78,7 +75,12 @@ export default function Login() {
   const login_btn = async () => {
 
     if (!isFormValid) {
-      setempty_popup(true);
+      // setempty_popup(true);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Feels Blacks Form!",
+      });
     }
     else {
       setloading(true);
@@ -91,15 +93,29 @@ export default function Login() {
         const { user_mail, user_password } = await data.json();
 
         if (user_mail && user_password) {
-          setsuccess_popup(true);
-          console.log(user_mail);
-          console.log(user_password);
-          router.push(`/login/${user_mail._id}`);
-          setloading(false);
-          return;
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+              router.push(`/login/${user_mail._id}`);
+            }
+          });
+          Toast.fire({
+            icon: "success",
+            title: "Login in successfully"
+          });
         }
-        else if (!user_mail && !user_password) {
-          setincorrect_popup(true);
+        else if(!user_mail){
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Email is Incorrecte Please Again Try",
+          });
           setcolor_mail("red");
           setmail_check('/circle-xmark-regular.svg');
           setcolor_password("red");
@@ -108,7 +124,24 @@ export default function Login() {
           return;
         }
         else if (user_mail && !user_password) {
-          setphone_incorrect_popup(true);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Incorrect Password The Password that you'r entered is incorrect.Please try again.",
+          });
+          setcolor_password("red");
+          setpassword_check("/circle-xmark-regular.svg");
+          setloading(false);
+          return;
+        }
+        else if (!user_mail && !user_password) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Email and Password Both are Incorrect Please try again",
+          });
+          setcolor_mail("red");
+          setmail_check('/circle-xmark-regular.svg');
           setcolor_password("red");
           setpassword_check("/circle-xmark-regular.svg");
           setloading(false);
@@ -121,48 +154,14 @@ export default function Login() {
       }
     };
   };
-  
+
   const register_btn = () => {
     setregister(true);
     router.push('/');
   }
 
-  // Popup 
-
-  function Show(props) {
-    return (
-      <div id="popup1" className="popup-container ">
-        <div className="popup-content">
-          <span className="close" onClick={Close}>{props.wrong} </span>
-          <div className="props-icon" >
-            <div>
-              <FontAwesomeIcon  icon={props.check_icon}  style={{ height: '2rem'}} className={props.color} />
-              <p>{props.error}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  function Close(){
-    setempty_popup(false);
-    setsuccess_popup(false);
-    setincorrect_popup(false);
-    setphone_incorrect_popup(false);
-  }
-
-
   return (
     <main>
-      {empty_popup && <div> <Show error="Form Blacks Feels"  wrong="&times;"  check_icon={faXmarkCircle} color="red" /> </div>}
-      
-      {success_popup && <div> <Show error="Sucessfull Form...." wrong="" check_icon={faCheckCircle} color='green' /> </div>}
-      
-      {incorrect_popup && <div> <Show error="Email and Password Both are Incorrect Please try again"  wrong="&times;"  check_icon={faXmarkCircle} color="red" /> </div>}
-      
-      {phone_incorrect_popup && <div> <Show error="Incorrect Password The Password that you'r entered is incorrect.Please try again."  check_icon={faXmarkCircle} wrong="&times;"  color="red" /> </div>}
-
       <div className="container register-section">
         <div className="register-from">
           <div className="row">
@@ -225,8 +224,8 @@ export default function Login() {
                   </div>
 
                   <input type="checkbox" className="mt-3" onClick={showpassword} /> Show Password
-
                   <br></br>
+
                   <br></br>
                   <br></br>
                   <div className="button">

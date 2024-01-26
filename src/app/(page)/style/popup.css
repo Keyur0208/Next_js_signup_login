@@ -1,4 +1,4 @@
-
+/* 
 .popup-link {
   display: flex;
   flex-wrap: wrap;
@@ -96,4 +96,9 @@
 
 .green{
   color: green;
+}
+ */
+
+.swal2-cancel{
+  margin-right: 2rem;
 }
